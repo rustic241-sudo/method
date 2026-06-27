@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Method Commerce — Client Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#0B0C10;
+    --ink-soft:#2C2E35;
+    --paper:#FAF9F5;
+    --paper-card:#FFFFFF;
+    --cobalt:#1B43FF;
+    --cobalt-deep:#0D2ABF;
+    --cobalt-glow:rgba(27, 67, 255, 0.08);
+    --line:#E2E3DC;
+    --line-dark:#22242B;
+    --muted:#82847D;
+    --ok:#10B981;
+    --radius:16px;
+    --radius-sm:10px;
+    --font-display:'Bricolage Grotesque', sans-serif;
+    --font-sans:'Inter', sans-serif;
+    --font-mono:'Space Mono', monospace;
+  }
+  
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:var(--font-sans);
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* Glowing background blobs */
+  .glow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow-blob {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, var(--cobalt-glow) 0%, rgba(27,67,255,0) 70%);
+    border-radius: 50%;
+    filter: blur(50px);
+  }
+  .glow-1 {
+    top: 10%;
+    left: -150px;
+    animation: float-blob 16s infinite alternate ease-in-out;
+  }
+  .glow-2 {
+    bottom: 10%;
+    right: -150px;
+    animation: float-blob-reverse 20s infinite alternate ease-in-out;
+  }
+  @keyframes float-blob {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, 30px) scale(1.08); }
+    100% { transform: translate(-20px, -40px) scale(0.92); }
+  }
+  @keyframes float-blob-reverse {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-50px, 40px) scale(0.95); }
+    100% { transform: translate(30px, -30px) scale(1.05); }
+  }
+
+  .display{font-family:var(--font-display);letter-spacing:-0.02em;font-weight:700;line-height:1.05}
+  .mono{font-family:var(--font-mono)}
+  .eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cobalt);font-weight: 700}
+  
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--cobalt);
+    color:#fff;
+    padding:13px 24px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    border:none;
+    cursor:pointer;
+    transition:transform .2s cubic-bezier(0.16, 1, 0.3, 1), background .2s, box-shadow .2s;
+    box-shadow: 0 4px 12px rgba(27, 67, 255, 0.15);
+  }
+  .btn:hover{
+    background:var(--cobalt-deep);
+    transform:translateY(-1.5px);
+    box-shadow: 0 6px 18px rgba(27, 67, 255, 0.25);
+  }
+  .btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+    transform:none !important;
+    box-shadow: none !important;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
+    box-shadow: none;
+  }
+  .btn-ghost:hover{
+    background:#fff;
+    border-color:var(--ink);
+    transform:translateY(-1.5px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  }
+  .btn svg{width:15px;height:15px}
+
+  /* shell */
+  .topbar{
+    border-bottom:1px solid var(--line);
+    background:var(--paper-card);
+    position: relative;
+    z-index: 10;
+  }
+  .topbar-in{
+    max-width:760px;
+    margin:0 auto;
+    padding:18px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:between;
+  }
+  .brand{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:-0.02em;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    flex-grow: 1;
+  }
+  .brand .dot{width:10px;height:10px;background:var(--cobalt);border-radius:3px;transform:rotate(45deg)}
+  .topbar-in .tag{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:.08em;
+    font-weight: 700;
+  }
+
+  .shell{
+    max-width:760px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+    position: relative;
+    z-index: 5;
+  }
+
+  /* progress */
+  .progress{display:flex;gap:8px;margin-bottom:34px}
+  .pbar{flex:1;height:6px;border-radius:4px;background:var(--line);overflow:hidden;position:relative}
+  .pbar span{position:absolute;inset:0;background:var(--cobalt);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+  .pbar.done span{transform:scaleX(1)}
+  .pbar.active span{transform:scaleX(.5)}
+  .step-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:.1em;
+    margin-bottom:8px;
+    font-weight: 700;
+  }
+
+  .panel{display:none;animation:fade .4s cubic-bezier(0.16, 1, 0.3, 1)}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  h1.q{font-size:clamp(28px,5vw,38px);margin-bottom:8px}
+  .q-sub{color:var(--ink-soft);font-size:16px;margin-bottom:30px}
+
+  /* plan cards */
+  .plans{display:flex;flex-direction:column;gap:16px}
+  .plan{
+    border:1.5px solid var(--line);
+    background:var(--paper-card);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position:relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+  }
+  .plan:hover{
+    border-color:var(--cobalt);
+    transform:translateY(-2px);
+    box-shadow: 0 10px 24px rgba(27,67,255,0.06);
+  }
+  .plan.sel{
+    border-color:var(--cobalt);
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(27,67,255,.12);
+  }
+  .plan .radio{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color .2s;
+    background: #fff;
+  }
+  .plan.sel .radio{border-color:var(--cobalt)}
+  .plan.sel .radio::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--cobalt)}
+  .plan .info{flex:1}
+  .plan .pn{font-family:var(--font-display);font-weight:700;font-size:19px}
+  .plan .pd{font-size:13.5px;color:var(--ink-soft);margin-top:4px}
+  .plan .pp{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-0.02em}
+  .plan .ribbon{
+    position:absolute;
+    top:-11px;
+    right:20px;
+    background:var(--cobalt);
+    color:#fff;
+    font-family:var(--font-mono);
+    font-size:9.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    padding:5px 12px;
+    border-radius:6px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(27, 67, 255, 0.25);
+  }
+
+  /* fields */
+  .field{margin-bottom:20px}
+  .field label{
+    display:block;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+    font-family:var(--font-mono);
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  .field input, .field select, .field textarea{
+    width:100%;
+    border:1px solid var(--line);
+    background:var(--paper-card);
+    border-radius:10px;
+    padding:13px 16px;
+    font-family:var(--font-sans);
+    font-size:15px;
+    color:var(--ink);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none;
+    border-color:var(--cobalt);
+    box-shadow:0 0 0 4px rgba(27,67,255,.12);
+  }
+  .field textarea{resize:vertical;min-height:90px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{
+    border:1.5px solid var(--line);
+    background:var(--paper-card);
+    border-radius:100px;
+    padding:10px 18px;
+    font-size:14px;
+    cursor:pointer;
+    transition:all .2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select:none;
+    font-weight: 500;
+  }
+  .chip:hover {
+    border-color: var(--ink-soft);
+  }
+  .chip.sel{
+    border-color:var(--cobalt);
+    background:rgba(27,67,255,.06);
+    color:var(--cobalt-deep);
+    font-weight:600;
+  }
+
+  /* nav */
+  .nav-btns{display:flex;justify-content:space-between;gap:14px;margin-top:38px}
+
+  /* agreement */
+  .agreement{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:30px;
+    max-height:360px;
+    overflow-y:auto;
+    font-size:14px;
+    line-height:1.7;
+    white-space:pre-wrap;
+    color:var(--ink-soft);
+    font-family:var(--font-sans);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.01);
+  }
+  .agreement::-webkit-scrollbar { width: 6px; }
+  .agreement::-webkit-scrollbar-track { background: transparent; }
+  .agreement::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 3px; }
+  
+  .agreement h4{font-family:var(--font-display);color:var(--ink);font-size:16px;margin:20px 0 6px}
+  .agreement .ag-title{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:20px;
+    color:var(--ink);
+    letter-spacing:-.01em;
+    margin-bottom:8px;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 12px;
+  }
+  .accept-box{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    margin-top:24px;
+    background:rgba(27,67,255,.04);
+    border:1px solid rgba(27,67,255,.15);
+    border-radius:12px;
+    padding:18px;
+  }
+  .accept-box input{width:20px;height:20px;margin-top:2px;accent-color:var(--cobalt);flex-shrink:0;cursor:pointer}
+  .accept-box label{font-size:14px;color:var(--ink);cursor:pointer;line-height: 1.5;font-weight: 500}
+  .sig-row{margin-top:20px}
+
+  /* success */
+  .success{text-align:center;padding:20px 0}
+  .check-circle{
+    width:84px;
+    height:84px;
+    border-radius:50%;
+    background:rgba(16,185,129,.1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 24px;
+    box-shadow: 0 4px 14px rgba(16,185,129,0.15);
+    animation:pop .6s cubic-bezier(.175, .885, .32, 1.275);
+  }
+  @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+  .check-circle svg{width:40px;height:40px;color:var(--ok)}
+  .success h1{font-size:clamp(30px,5vw,44px);margin-bottom:8px}
+  .success p{color:var(--ink-soft);font-size:16.5px;margin:14px auto 32px;max-width:42ch}
+  .success-actions{display:flex;flex-direction:column;gap:12px;max-width:360px;margin:0 auto}
+  .wa-btn{
+    background:#25D366;
+    color:#fff;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+  }
+  .wa-btn:hover{
+    background:#1da851;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3);
+  }
+  .summary{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px;
+    margin:36px auto 0;
+    max-width:440px;
+    text-align:left;
+    font-size:14.5px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+  }
+  .summary .sr{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .summary .sr:last-child{border-bottom:none}
+  .summary .sr .k{color:var(--muted);font-weight: 500}
+  .summary .sr .v{font-weight:600}
+
+  .hint{font-size:12.5px;color:var(--muted);margin-top:10px;text-align: center;font-weight: 500}
+  @media(max-width:560px){
+    .row2{grid-template-columns:1fr}
+    .plan{flex-wrap:wrap}
+    .plan .pp{margin-left:40px;margin-top:6px}
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-container">
+  <div class="glow-blob glow-1"></div>
+  <div class="glow-blob glow-2"></div>
+</div>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="dot"></span>Method Commerce</div>
+    <div class="tag">CLIENT ONBOARDING</div>
+  </div>
+</div>
+
+<div class="shell">
+  <div class="step-label" id="stepLabel">STEP 1 OF 5</div>
+  <div class="progress">
+    <div class="pbar" data-s="1"><span></span></div>
+    <div class="pbar" data-s="2"><span></span></div>
+    <div class="pbar" data-s="3"><span></span></div>
+    <div class="pbar" data-s="4"><span></span></div>
+    <div class="pbar" data-s="5"><span></span></div>
+  </div>
+
+  <!-- STEP 1: PLAN -->
+  <div class="panel active" data-panel="1">
+    <span class="eyebrow">Pricing</span>
+    <h1 class="q display">Pick your plan</h1>
+    <p class="q-sub">Choose the package that fits your store. You can always upgrade later.</p>
+    <div class="plans" id="plans">
+      <div class="plan" data-plan="Launch" data-price="4999">
+        <div class="radio"></div>
+        <div class="info">
+          <div class="pn">Launch</div>
+          <div class="pd">Theme-based store setup, core pages, mobile-optimized, payments &amp; shipping.</div>
+        </div>
+        <div class="pp">₹4,999</div>
+      </div>
+      
+      <div class="plan" data-plan="Convert" data-price="7999">
+        <div class="ribbon">Most popular</div>
+        <div class="radio"></div>
+        <div class="info">
+          <div class="pn">Convert</div>
+          <div class="pd">Everything in Launch + custom homepage sections, conversion PDPs, sticky cart, CRO.</div>
+        </div>
+        <div class="pp">₹7,999</div>
+      </div>
+      
+      <div class="plan" data-plan="Brand" data-price="12999">
+        <div class="radio"></div>
+        <div class="info">
+          <div class="pn">Brand</div>
+          <div class="pd">Everything in Convert + deeper custom design, reviews &amp; upsells, full brand polish.</div>
+        </div>
+        <div class="pp">₹12,999</div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <span></span>
+      <button class="btn" data-next disabled id="next1">Continue 
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: BRAND DETAILS -->
+  <div class="panel" data-panel="2">
+    <span class="eyebrow">About your brand</span>
+    <h1 class="q display">Tell us about your brand</h1>
+    <p class="q-sub">The basics so we know what we're building.</p>
+    <div class="field">
+      <label>Brand / store name *</label>
+      <input id="brand" type="text" placeholder="e.g. Taqwa Threads">
+    </div>
+    <div class="field">
+      <label>What do you sell?</label>
+      <input id="category" type="text" placeholder="e.g. Streetwear t-shirts">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Existing website (if any)</label>
+        <input id="website" type="text" placeholder="yourstore.com">
+      </div>
+      <div class="field">
+        <label>Instagram</label>
+        <input id="insta" type="text" placeholder="@yourbrand">
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-ghost" data-back>Back</button>
+      <button class="btn" data-next id="next2" disabled>Continue 
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: REQUIREMENTS -->
+  <div class="panel" data-panel="3">
+    <span class="eyebrow">Requirements</span>
+    <h1 class="q display">What do you need?</h1>
+    <p class="q-sub">Pick what applies and add anything specific.</p>
+    <div class="field">
+      <label>Type of work (select all that apply)</label>
+      <div class="chips" id="reqChips">
+        <div class="chip" data-req="New store build">New store build</div>
+        <div class="chip" data-req="Store redesign">Store redesign</div>
+        <div class="chip" data-req="Product page / CRO">Product page / CRO</div>
+        <div class="chip" data-req="Logo / branding help">Logo / branding help</div>
+        <div class="chip" data-req="Product upload">Product upload</div>
+        <div class="chip" data-req="Migration">Migration</div>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Approx. no. of products</label>
+        <input id="products" type="text" placeholder="e.g. 10">
+      </div>
+      <div class="field">
+        <label>Preferred timeline</label>
+        <select id="timeline">
+          <option>5–7 days</option>
+          <option>7–10 days</option>
+          <option>2 weeks</option>
+          <option>Flexible</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Anything specific you want?</label>
+      <textarea id="notes" placeholder="Reference stores you like, must-have features, brand vibe, colors..."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-ghost" data-back>Back</button>
+      <button class="btn" data-next>Continue 
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 4: YOUR DETAILS -->
+  <div class="panel" data-panel="4">
+    <span class="eyebrow">Your details</span>
+    <h1 class="q display">How do we reach you?</h1>
+    <p class="q-sub">We'll send your free audit and updates here.</p>
+    <div class="field">
+      <label>Your full name *</label>
+      <input id="name" type="text" placeholder="e.g. Rahul Sharma">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>WhatsApp number *</label>
+        <input id="phone" type="tel" placeholder="e.g. +91 99999 99999">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@email.com">
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-ghost" data-back>Back</button>
+      <button class="btn" data-next id="next4" disabled>Review agreement 
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 5: AGREEMENT -->
+  <div class="panel" data-panel="5">
+    <span class="eyebrow">Agreement</span>
+    <h1 class="q display">Review &amp; accept</h1>
+    <p class="q-sub">A simple working agreement, generated from your details.</p>
+    <div class="agreement" id="agreementBox"></div>
+    <div class="accept-box">
+      <input type="checkbox" id="agree">
+      <label for="agree">I have read and agree to the terms of this agreement, and I'm ready to be onboarded with Method Commerce.</label>
+    </div>
+    <div class="field sig-row">
+      <label>Type your full name to sign *</label>
+      <input id="signature" type="text" placeholder="Your full name">
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-ghost" data-back>Back</button>
+      <button class="btn" id="acceptBtn" disabled>Accept &amp; download 
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      </button>
+    </div>
+    <p class="hint">This is a simple plain-language working agreement, not formal legal advice.</p>
+  </div>
+
+  <!-- STEP 6: SUCCESS -->
+  <div class="panel" data-panel="6">
+    <div class="success">
+      <div class="check-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1 class="display">You're onboarded! 🎉</h1>
+      <p>Your agreement has downloaded. Tap below to send us a quick confirmation on WhatsApp and we'll get started.</p>
+      
+      <div class="success-actions">
+        <button class="btn wa-btn" id="waBtn">
+          Send confirmation on WhatsApp
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width: 17px; height: 17px;"><path d="M12.004 2C6.51 2 2.014 6.5 2.014 12c0 2.16.7 4.21 2.02 5.91L2.5 22l4.31-1.39c1.62.98 3.51 1.5 5.47 1.5 5.51 0 10-4.5 10-10S17.51 2 12.004 2zm5.72 13.9c-.24.67-1.4 1.25-1.92 1.34-.48.08-.94.1-3.05-.75-2.7-1.08-4.43-3.83-4.57-4.01-.13-.18-1.09-1.45-1.09-2.77 0-1.32.69-1.97.94-2.24.25-.27.67-.34.88-.34.2 0 .4 0 .58.01.19 0 .44-.07.69.53.25.61.85 2.08.93 2.23.08.15.13.33.03.53-.1.2-.15.33-.3.51-.15.18-.32.41-.46.55-.16.16-.33.33-.14.65.19.32.84 1.38 1.8 2.24.96.86 1.77 1.27 2.07 1.41.31.14.49.12.67-.09.18-.21.79-.92.99-1.23.21-.31.42-.26.7-.15.28.11 1.77.83 2.07.98.31.15.51.22.58.35.08.13.08.75-.16 1.42z"/></svg>
+        </button>
+        <button class="btn btn-ghost" id="redownload">Download agreement again</button>
+      </div>
+      
+      <div class="summary" id="summary"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ===== CONFIG: put your WhatsApp number here (country code, no + or spaces) =====
+  const WA_NUMBER = '919999999999';
+
+  const data = {
+    plan:'',
+    price:0,
+    brand:'',
+    category:'',
+    website:'',
+    insta:'',
+    reqs:[],
+    products:'',
+    timeline:'5–7 days',
+    notes:'',
+    name:'',
+    phone:'',
+    email:'',
+    signature:'',
+    date:''
+  };
+  
+  let step = 1;
+  const totalSteps = 6;
+
+  const panels = document.querySelectorAll('.panel');
+  const bars = document.querySelectorAll('.pbar');
+  const stepLabel = document.getElementById('stepLabel');
+
+  function render(){
+    panels.forEach(p => p.classList.toggle('active', +p.dataset.panel === step));
+    bars.forEach(b => {
+      const s = +b.dataset.s;
+      b.classList.toggle('done', s < step);
+      b.classList.toggle('active', s === step);
+    });
+    if(step <= 5){
+      stepLabel.textContent = `STEP ${step} OF 5`;
+      stepLabel.style.display = 'block';
+      document.querySelector('.progress').style.display = 'flex';
+    } else {
+      stepLabel.style.display = 'none';
+      document.querySelector('.progress').style.display = 'none';
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  // PLAN select
+  document.querySelectorAll('.plan').forEach(p => p.addEventListener('click', () => {
+    document.querySelectorAll('.plan').forEach(x => x.classList.remove('sel'));
+    p.classList.add('sel');
+    data.plan = p.dataset.plan;
+    data.price = +p.dataset.price;
+    document.getElementById('next1').disabled = false;
+  }));
+
+  // requirement chips
+  document.querySelectorAll('#reqChips .chip').forEach(c => c.addEventListener('click', () => {
+    c.classList.toggle('sel');
+    data.reqs = [...document.querySelectorAll('#reqChips .chip.sel')].map(x => x.dataset.req);
+  }));
+
+  // live binds + validation
+  const bind = (id, key, validateBtn) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      data[key] = el.value.trim();
+      if (validateBtn) validateBtn();
+    });
+  };
+  
+  const v2 = () => {
+    document.getElementById('next2').disabled = !data.brand;
+  };
+  
+  const v4 = () => {
+    document.getElementById('next4').disabled = !(data.name && data.phone);
+  };
+  
+  bind('brand', 'brand', v2);
+  bind('category', 'category');
+  bind('website', 'website');
+  bind('insta', 'insta');
+  bind('products', 'products');
+  bind('notes', 'notes');
+  
+  document.getElementById('timeline').addEventListener('change', e => data.timeline = e.target.value);
+  
+  bind('name', 'name', v4);
+  bind('phone', 'phone', v4);
+  bind('email', 'email');
+
+  // nav
+  document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => {
+    if (step === 4) buildAgreement();
+    step = Math.min(totalSteps, step + 1);
+    render();
+  }));
+  
+  document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => {
+    step = Math.max(1, step - 1);
+    render();
+  }));
+
+  // agreement accept validation
+  const agree = document.getElementById('agree');
+  const sig = document.getElementById('signature');
+  const acceptBtn = document.getElementById('acceptBtn');
+  
+  const vAccept = () => {
+    data.signature = sig.value.trim();
+    acceptBtn.disabled = !(agree.checked && data.signature);
+  };
+  
+  agree.addEventListener('change', vAccept);
+  sig.addEventListener('input', vAccept);
+
+
+  function todayStr(){
+    const d = new Date();
+    return d.toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  }
+
+  function agreementLines(){
+    data.date = todayStr();
+    const inr = n => 'INR ' + Number(n).toLocaleString('en-IN');
+    const deliverables = {
+      'Launch': ['Theme-based Shopify store setup', 'Up to 10 products added', 'Core pages (home, product, about, contact, policies)', 'Mobile-optimized layout', 'Payments & shipping setup'],
+      'Convert': ['Everything in Launch', 'Custom homepage sections', 'Conversion-focused product pages', 'Sticky add-to-cart & trust elements', 'Basic CRO setup'],
+      'Brand': ['Everything in Convert', 'Deeper custom design', 'Niche-specific brand feel', 'Reviews & upsell setup', 'Full brand polish']
+    }[data.plan] || [];
+    
+    const reqLine = data.reqs.length ? data.reqs.join(', ') : '—';
+    
+    return {
+      title: 'METHOD COMMERCE — SERVICE AGREEMENT',
+      sections: [
+        ['', `This agreement is made on ${data.date} between Method Commerce ("the Studio"), a Shopify store design studio, and ${data.name || 'the Client'} representing ${data.brand || 'the brand'} ("the Client").`],
+        ['1. Scope of work', `The Studio will deliver the "${data.plan}" package, including:\n• ${deliverables.join('\n• ')}\n\nAdditional requirements noted by the Client: ${reqLine}.\nApprox. products: ${data.products || '—'}.\nClient notes: ${data.notes || '—'}.`],
+        ['2. Price', `Total project fee: ${inr(data.price)} (one-time).`],
+        ['3. Payment terms', `The Studio follows a design-preview-first model. The Client will see a live preview of the store before any payment is due. Payment of ${inr(data.price)} is due upon the Client's approval of the design and before final handover / store launch. No advance is required.`],
+        ['4. Timeline', `Estimated delivery: ${data.timeline} from the date the Client provides all required materials (logo, product details, images, content).`],
+        ['5. Revisions', 'The package includes up to 2 rounds of revisions on the approved design. Further changes may be quoted separately.'],
+        ['6. Client responsibilities', 'The Client agrees to provide brand assets, product information, images and content needed to complete the work, in a timely manner.'],
+        ['7. Ownership & handover', 'On receipt of full payment, all delivered store files and access are handed over to the Client, who then owns the store.'],
+        ['8. Confidentiality', 'Both parties agree to keep shared business information confidential.'],
+        ['9. Support & maintenance', 'The Studio provides 15 days of free post-launch support starting from the launch date to address bug fixes, layout alignments, and payment gateway configuration errors.'],
+        ['10. Third-party services & fees', 'All third-party billing costs, including but not limited to Shopify store subscription fees, custom domain purchases, premium theme licensing, and paid app installations, shall be borne directly by the Client.'],
+        ['11. Electronic authorization & validity', 'This contract is electronically executed and verified. In accordance with the Information Technology Act, 2000 (India), checking the confirmation box and typing the Client\'s name as a signature establishes a legally valid, binding signature. No physical or wet ink signature is required.'],
+        ['12. Acceptance & execution', `Digitally Signed by: ${data.name} (${data.signature})\nStatus: VERIFIED & ACCEPTED\nDate: ${data.date}\nWhatsApp: ${data.phone || '—'}\n\nMethod Commerce — Shopify Store Studio (India)`]
+      ]
+    };
+  }
+
+  function buildAgreement(){
+    const a = agreementLines();
+    let html = `<div class="ag-title">${a.title}</div>`;
+    a.sections.forEach(([h, b]) => {
+      if (h) html += `<h4>${h}</h4>`;
+      html += b.replace(/\n/g, '<br>') + '<br><br>';
+    });
+    document.getElementById('agreementBox').innerHTML = html;
+  }
+
+  function downloadPDF(){
+    const a = agreementLines();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({unit:'pt', format:'a4'});
+    const M = 54;
+    const W = doc.internal.pageSize.getWidth() - M * 2;
+    let y = 64;
+    
+    const page = () => {
+      if (y > 730) {
+        doc.addPage();
+        y = 64;
+      }
+    };
+    
+    // Header banner line
+    doc.setFillColor(27, 67, 255); // Cobalt
+    doc.rect(M, y, W, 4, 'F');
+    y += 24;
+    
+    // Header title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(11, 12, 16); // Ink dark
+    doc.text('METHOD COMMERCE', M, y);
+    y += 18;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(130, 132, 125); // Muted
+    doc.text('Service Agreement / Client Onboarding', M, y);
+    y += 14;
+    
+    doc.setDrawColor(226, 227, 220); // Line
+    doc.line(M, y, M + W, y);
+    y += 26;
+    
+    a.sections.forEach(([h, b]) => {
+      if (h) {
+        page();
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(11, 12, 16);
+        doc.text(h, M, y);
+        y += 16;
+      }
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(44, 46, 53); // Ink soft
+      const lines = doc.splitTextToSize(b, W);
+      lines.forEach(ln => {
+        page();
+        doc.text(ln, M, y);
+        y += 15;
+      });
+      y += 10;
+    });
+    
+    // DRAW VERIFICATION STAMP
+    y += 20;
+    if (y > 670) {
+      doc.addPage();
+      y = 64;
+    }
+    
+    // Green border box
+    doc.setDrawColor(16, 185, 129); // Green
+    doc.setLineWidth(1.5);
+    doc.rect(M, y, 240, 80);
+    
+    // Badge background
+    doc.setFillColor(232, 245, 233); // Very light green
+    doc.rect(M + 1.5, y + 1.5, 237, 20, 'F');
+    
+    // Badge Text
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(46, 125, 50); // Dark green
+    doc.text('  DIGITALLY SECURED & VALIDATED', M + 10, y + 14);
+    
+    // Stamp Details
+    doc.setFontSize(8);
+    doc.setTextColor(58, 60, 68);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Client Name: ' + data.name, M + 12, y + 36);
+    doc.text('Signature Ref: ' + data.signature, M + 12, y + 48);
+    doc.text('Timestamp: ' + data.date + ' IST', M + 12, y + 60);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(16, 185, 129);
+    doc.text('Status: APPROVED & BINDING', M + 12, y + 72);
+    
+    doc.save(`Method-Commerce-Agreement-${(data.brand || 'client').replace(/\s+/g, '-')}.pdf`);
+  }
+
+
+  function fillSummary(){
+    const inr = n => 'INR ' + Number(n).toLocaleString('en-IN');
+    document.getElementById('summary').innerHTML = `
+      <div class="sr"><span class="k">Brand</span><span class="v">${data.brand || '—'}</span></div>
+      <div class="sr"><span class="k">Plan</span><span class="v">${data.plan} · ${inr(data.price)}</span></div>
+      <div class="sr"><span class="k">Timeline</span><span class="v">${data.timeline}</span></div>
+      <div class="sr"><span class="k">Signed by</span><span class="v">${data.signature}</span></div>
+      <div class="sr"><span class="k">Date</span><span class="v">${data.date}</span></div>`;
+  }
+
+  acceptBtn.addEventListener('click', () => {
+    downloadPDF();
+    fillSummary();
+    step = 6;
+    render();
+  });
+  
+  document.getElementById('redownload').addEventListener('click', downloadPDF);
+
+  document.getElementById('waBtn').addEventListener('click', () => {
+    const inr = n => 'INR ' + Number(n).toLocaleString('en-IN');
+    const text = `✅ Onboarding complete — Method Commerce%0A%0AName: ${data.name}%0ABrand: ${data.brand}%0APlan: ${data.plan} (${inr(data.price)})%0ATimeline: ${data.timeline}%0AWhatsApp: ${data.phone}%0A%0AAgreement accepted & signed on ${data.date}. Ready to start! 🚀`;
+    window.open(`https://wa.me/${WA_NUMBER}?text=${text}`, '_blank');
+  });
+
+  // PARSE QUERY PARAMETERS FOR DYNAMIC PRE-SELECTION
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const planParam = urlParams.get('plan');
+    if (planParam) {
+      const targetPlan = document.querySelector(`.plan[data-plan="${planParam}"]`);
+      if (targetPlan) {
+        targetPlan.click();
+      }
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
