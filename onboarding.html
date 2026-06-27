@@ -10,16 +10,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root{
-    --ink:#0B0C10;
-    --ink-soft:#2C2E35;
-    --paper:#FAF9F5;
-    --paper-card:#FFFFFF;
-    --cobalt:#1B43FF;
-    --cobalt-deep:#0D2ABF;
-    --cobalt-glow:rgba(27, 67, 255, 0.08);
-    --line:#E2E3DC;
-    --line-dark:#22242B;
-    --muted:#82847D;
+    --ink:#FFFFFF;
+    --ink-soft:#B9BBC4;
+    --paper:#07080B;
+    --paper-card:rgba(255, 255, 255, 0.03);
+    --cobalt:#2F58FF;
+    --cobalt-deep:#1B43FF;
+    --cobalt-glow:rgba(47, 88, 255, 0.15);
+    --line:rgba(255, 255, 255, 0.08);
+    --line-dark:rgba(255, 255, 255, 0.04);
+    --muted:#666A7D;
     --ok:#10B981;
     --radius:16px;
     --radius-sm:10px;
@@ -54,9 +54,9 @@
     position: absolute;
     width: 450px;
     height: 450px;
-    background: radial-gradient(circle, var(--cobalt-glow) 0%, rgba(27,67,255,0) 70%);
+    background: radial-gradient(circle, var(--cobalt-glow) 0%, rgba(47,88,255,0) 70%);
     border-radius: 50%;
-    filter: blur(50px);
+    filter: blur(80px);
   }
   .glow-1 {
     top: 10%;
@@ -79,7 +79,15 @@
     100% { transform: translate(30px, -30px) scale(1.05); }
   }
 
-  .display{font-family:var(--font-display);letter-spacing:-0.02em;font-weight:700;line-height:1.05}
+  .display{
+    font-family:var(--font-display);
+    letter-spacing:-0.02em;
+    font-weight:700;
+    line-height:1.05;
+    background: linear-gradient(135deg, #FFFFFF 40%, #8FA6FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
   .mono{font-family:var(--font-mono)}
   .eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cobalt);font-weight: 700}
   
@@ -97,12 +105,12 @@
     border:none;
     cursor:pointer;
     transition:transform .2s cubic-bezier(0.16, 1, 0.3, 1), background .2s, box-shadow .2s;
-    box-shadow: 0 4px 12px rgba(27, 67, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(47, 88, 255, 0.25);
   }
   .btn:hover{
     background:var(--cobalt-deep);
     transform:translateY(-1.5px);
-    box-shadow: 0 6px 18px rgba(27, 67, 255, 0.25);
+    box-shadow: 0 6px 18px rgba(47, 88, 255, 0.45);
   }
   .btn:disabled{
     opacity:.45;
@@ -111,23 +119,25 @@
     box-shadow: none !important;
   }
   .btn-ghost{
-    background:transparent;
-    color:var(--ink);
+    background:rgba(255, 255, 255, 0.04);
+    color:#fff;
     border:1px solid var(--line);
     box-shadow: none;
   }
   .btn-ghost:hover{
-    background:#fff;
-    border-color:var(--ink);
+    background:rgba(255, 255, 255, 0.08);
+    border-color:#fff;
     transform:translateY(-1.5px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
   .btn svg{width:15px;height:15px}
 
   /* shell */
   .topbar{
-    border-bottom:1px solid var(--line);
-    background:var(--paper-card);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    background:rgba(7, 8, 11, 0.6);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
     position: relative;
     z-index: 10;
   }
@@ -137,7 +147,7 @@
     padding:18px 24px;
     display:flex;
     align-items:center;
-    justify-content:between;
+    justify-content:space-between;
   }
   .brand{
     font-family:var(--font-display);
@@ -148,6 +158,7 @@
     align-items:center;
     gap:9px;
     flex-grow: 1;
+    text-align: left;
   }
   .brand .dot{width:10px;height:10px;background:var(--cobalt);border-radius:3px;transform:rotate(45deg)}
   .topbar-in .tag{
@@ -179,19 +190,20 @@
     letter-spacing:.1em;
     margin-bottom:8px;
     font-weight: 700;
+    text-align: left;
   }
 
-  .panel{display:none;animation:fade .4s cubic-bezier(0.16, 1, 0.3, 1)}
+  .panel{display:none;animation:fade .4s cubic-bezier(0.16, 1, 0.3, 1);text-align: left;}
   .panel.active{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  h1.q{font-size:clamp(28px,5vw,38px);margin-bottom:8px}
+  h1.q{font-size:clamp(28px,5vw,38px);margin-bottom:8px;color:#fff}
   .q-sub{color:var(--ink-soft);font-size:16px;margin-bottom:30px}
 
   /* plan cards */
   .plans{display:flex;flex-direction:column;gap:16px}
   .plan{
     border:1.5px solid var(--line);
-    background:var(--paper-card);
+    background:rgba(255, 255, 255, 0.02);
     border-radius:var(--radius);
     padding:22px 24px;
     cursor:pointer;
@@ -200,36 +212,36 @@
     gap:18px;
     transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     position:relative;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
   .plan:hover{
-    border-color:var(--cobalt);
+    border-color:rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.04);
     transform:translateY(-2px);
-    box-shadow: 0 10px 24px rgba(27,67,255,0.06);
   }
   .plan.sel{
     border-color:var(--cobalt);
-    background: #fff;
-    box-shadow: 0 12px 30px rgba(27,67,255,.12);
+    background:rgba(47, 88, 255, 0.08);
+    box-shadow: 0 12px 30px rgba(47, 88, 255, 0.15);
   }
   .plan .radio{
     width:22px;
     height:22px;
     border-radius:50%;
-    border:2px solid var(--line);
+    border:2px solid rgba(255,255,255,0.15);
     flex-shrink:0;
     display:flex;
     align-items:center;
     justify-content:center;
     transition:border-color .2s;
-    background: #fff;
+    background:rgba(0,0,0,0.2);
   }
   .plan.sel .radio{border-color:var(--cobalt)}
   .plan.sel .radio::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--cobalt)}
-  .plan .info{flex:1}
-  .plan .pn{font-family:var(--font-display);font-weight:700;font-size:19px}
+  .plan .info{flex:1;text-align: left;}
+  .plan .pn{font-family:var(--font-display);font-weight:700;font-size:19px;color:#fff}
   .plan .pd{font-size:13.5px;color:var(--ink-soft);margin-top:4px}
-  .plan .pp{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-0.02em}
+  .plan .pp{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-0.02em;color:#fff}
   .plan .ribbon{
     position:absolute;
     top:-11px;
@@ -243,11 +255,11 @@
     padding:5px 12px;
     border-radius:6px;
     font-weight: 700;
-    box-shadow: 0 4px 10px rgba(27, 67, 255, 0.25);
+    box-shadow: 0 4px 10px rgba(47, 88, 255, 0.35);
   }
 
   /* fields */
-  .field{margin-bottom:20px}
+  .field{margin-bottom:20px;text-align: left;}
   .field label{
     display:block;
     font-size:11.5px;
@@ -260,26 +272,36 @@
   }
   .field input, .field select, .field textarea{
     width:100%;
-    border:1px solid var(--line);
-    background:var(--paper-card);
+    border:1px solid rgba(255, 255, 255, 0.08);
+    background:rgba(0, 0, 0, 0.2);
     border-radius:10px;
     padding:13px 16px;
     font-family:var(--font-sans);
     font-size:15px;
-    color:var(--ink);
-    transition:border-color .2s, box-shadow .2s;
+    color:#fff;
+    transition:border-color .2s, box-shadow .2s, background-color .2s;
+  }
+  .field input::placeholder, .field textarea::placeholder {
+    color: var(--muted);
+    opacity: 0.8;
   }
   .field input:focus, .field select:focus, .field textarea:focus{
     outline:none;
     border-color:var(--cobalt);
-    box-shadow:0 0 0 4px rgba(27,67,255,.12);
+    background:rgba(0,0,0,0.4);
+    box-shadow:0 0 0 4px rgba(47,88,255,.2);
+  }
+  .field select option {
+    background: #111;
+    color: #fff;
   }
   .field textarea{resize:vertical;min-height:90px}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .chips{display:flex;flex-wrap:wrap;gap:10px}
   .chip{
-    border:1.5px solid var(--line);
-    background:var(--paper-card);
+    border:1.5px solid rgba(255, 255, 255, 0.08);
+    background:rgba(255, 255, 255, 0.02);
+    color:var(--ink-soft);
     border-radius:100px;
     padding:10px 18px;
     font-size:14px;
@@ -289,12 +311,13 @@
     font-weight: 500;
   }
   .chip:hover {
-    border-color: var(--ink-soft);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
   }
   .chip.sel{
     border-color:var(--cobalt);
-    background:rgba(27,67,255,.06);
-    color:var(--cobalt-deep);
+    background:rgba(47, 88, 255, 0.1);
+    color:#fff;
     font-weight:600;
   }
 
@@ -303,8 +326,8 @@
 
   /* agreement */
   .agreement{
-    background:var(--paper-card);
-    border:1px solid var(--line);
+    background:rgba(255, 255, 255, 0.015);
+    border:1px solid rgba(255, 255, 255, 0.06);
     border-radius:var(--radius);
     padding:30px;
     max-height:360px;
@@ -314,21 +337,22 @@
     white-space:pre-wrap;
     color:var(--ink-soft);
     font-family:var(--font-sans);
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.01);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    text-align: left;
   }
   .agreement::-webkit-scrollbar { width: 6px; }
   .agreement::-webkit-scrollbar-track { background: transparent; }
-  .agreement::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 3px; }
+  .agreement::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
   
-  .agreement h4{font-family:var(--font-display);color:var(--ink);font-size:16px;margin:20px 0 6px}
+  .agreement h4{font-family:var(--font-display);color:#fff;font-size:16px;margin:20px 0 6px}
   .agreement .ag-title{
     font-family:var(--font-display);
     font-weight:800;
     font-size:20px;
-    color:var(--ink);
+    color:#fff;
     letter-spacing:-.01em;
     margin-bottom:8px;
-    border-bottom: 2px solid var(--line);
+    border-bottom: 2px solid rgba(255,255,255,0.06);
     padding-bottom: 12px;
   }
   .accept-box{
@@ -336,13 +360,14 @@
     align-items:flex-start;
     gap:14px;
     margin-top:24px;
-    background:rgba(27,67,255,.04);
-    border:1px solid rgba(27,67,255,.15);
+    background:rgba(47, 88, 255, 0.05);
+    border:1px solid rgba(47, 88, 255, 0.15);
     border-radius:12px;
     padding:18px;
+    text-align: left;
   }
   .accept-box input{width:20px;height:20px;margin-top:2px;accent-color:var(--cobalt);flex-shrink:0;cursor:pointer}
-  .accept-box label{font-size:14px;color:var(--ink);cursor:pointer;line-height: 1.5;font-weight: 500}
+  .accept-box label{font-size:14px;color:#fff;cursor:pointer;line-height: 1.5;font-weight: 500}
   .sig-row{margin-top:20px}
 
   /* success */
@@ -351,43 +376,43 @@
     width:84px;
     height:84px;
     border-radius:50%;
-    background:rgba(16,185,129,.1);
+    background:rgba(16,185,129,.15);
     display:flex;
     align-items:center;
     justify-content:center;
     margin:0 auto 24px;
-    box-shadow: 0 4px 14px rgba(16,185,129,0.15);
+    box-shadow: 0 4px 14px rgba(16,185,129,0.3);
     animation:pop .6s cubic-bezier(.175, .885, .32, 1.275);
   }
   @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
   .check-circle svg{width:40px;height:40px;color:var(--ok)}
-  .success h1{font-size:clamp(30px,5vw,44px);margin-bottom:8px}
+  .success h1{font-size:clamp(30px,5vw,44px);margin-bottom:8px;color:#fff}
   .success p{color:var(--ink-soft);font-size:16.5px;margin:14px auto 32px;max-width:42ch}
   .success-actions{display:flex;flex-direction:column;gap:12px;max-width:360px;margin:0 auto}
   .wa-btn{
     background:#25D366;
     color:#fff;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
   }
   .wa-btn:hover{
     background:#1da851;
-    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3);
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
   }
   .summary{
-    background:var(--paper-card);
-    border:1px solid var(--line);
+    background:rgba(255, 255, 255, 0.02);
+    border:1px solid rgba(255, 255, 255, 0.06);
     border-radius:14px;
     padding:22px;
     margin:36px auto 0;
     max-width:440px;
     text-align:left;
     font-size:14.5px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
   }
-  .summary .sr{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .summary .sr{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,0.06)}
   .summary .sr:last-child{border-bottom:none}
   .summary .sr .k{color:var(--muted);font-weight: 500}
-  .summary .sr .v{font-weight:600}
+  .summary .sr .v{font-weight:600;color:#fff}
 
   .hint{font-size:12.5px;color:var(--muted);margin-top:10px;text-align: center;font-weight: 500}
   @media(max-width:560px){
@@ -433,248 +458,269 @@
           <div class="pn">Launch</div>
           <div class="pd">Theme-based store setup, core pages, mobile-optimized, payments &amp; shipping.</div>
         </div>
-        <div class="pp">₹4,999</div>
+        <div class="pp">INR 4,999</div>
       </div>
       
-      <div class="plan" data-plan="Convert" data-price="7999">
+      <div class="plan" data-plan="Convert" data-price="8999">
         <div class="ribbon">Most popular</div>
         <div class="radio"></div>
         <div class="info">
           <div class="pn">Convert</div>
           <div class="pd">Everything in Launch + custom homepage sections, conversion PDPs, sticky cart, CRO.</div>
         </div>
-        <div class="pp">₹7,999</div>
+        <div class="pp">INR 8,999</div>
       </div>
       
       <div class="plan" data-plan="Brand" data-price="12999">
         <div class="radio"></div>
         <div class="info">
           <div class="pn">Brand</div>
-          <div class="pd">Everything in Convert + deeper custom design, reviews &amp; upsells, full brand polish.</div>
+          <div class="pd">Everything in Convert + deeper custom design, brand feel, reviews, upsell, and polish.</div>
         </div>
-        <div class="pp">₹12,999</div>
+        <div class="pp">INR 12,999</div>
       </div>
     </div>
+    
     <div class="nav-btns">
-      <span></span>
-      <button class="btn" data-next disabled id="next1">Continue 
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
+      <div></div>
+      <button class="btn" data-next>Continue</button>
     </div>
   </div>
 
   <!-- STEP 2: BRAND DETAILS -->
   <div class="panel" data-panel="2">
-    <span class="eyebrow">About your brand</span>
-    <h1 class="q display">Tell us about your brand</h1>
-    <p class="q-sub">The basics so we know what we're building.</p>
+    <span class="eyebrow">Details</span>
+    <h1 class="q display">About your brand</h1>
+    <p class="q-sub">Tell us the basics of what you sell so we can plan the layout.</p>
+    
     <div class="field">
-      <label>Brand / store name *</label>
-      <input id="brand" type="text" placeholder="e.g. Taqwa Threads">
+      <label for="brand">Brand / Company Name</label>
+      <input id="brand" type="text" placeholder="e.g. Taqwa Threads" required>
     </div>
+    
     <div class="field">
-      <label>What do you sell?</label>
-      <input id="category" type="text" placeholder="e.g. Streetwear t-shirts">
+      <label for="products">Approximate Number of Products</label>
+      <select id="products">
+        <option>1 - 10 products</option>
+        <option>10 - 50 products</option>
+        <option>50 - 200 products</option>
+        <option>200+ products</option>
+      </select>
     </div>
-    <div class="row2">
-      <div class="field">
-        <label>Existing website (if any)</label>
-        <input id="website" type="text" placeholder="yourstore.com">
-      </div>
-      <div class="field">
-        <label>Instagram</label>
-        <input id="insta" type="text" placeholder="@yourbrand">
-      </div>
+    
+    <div class="field">
+      <label for="timeline">Desired Launch Timeline</label>
+      <select id="timeline">
+        <option>As soon as possible (Urgent)</option>
+        <option>Within 1 - 2 weeks</option>
+        <option>Within 3 - 4 weeks</option>
+        <option>Flexible (No rush)</option>
+      </select>
     </div>
+    
     <div class="nav-btns">
       <button class="btn btn-ghost" data-back>Back</button>
-      <button class="btn" data-next id="next2" disabled>Continue 
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
+      <button class="btn" id="next2" data-next disabled>Continue</button>
     </div>
   </div>
 
-  <!-- STEP 3: REQUIREMENTS -->
+  <!-- STEP 3: SPECIAL REQUIREMENTS -->
   <div class="panel" data-panel="3">
-    <span class="eyebrow">Requirements</span>
-    <h1 class="q display">What do you need?</h1>
-    <p class="q-sub">Pick what applies and add anything specific.</p>
+    <span class="eyebrow">Features</span>
+    <h1 class="q display">Add-on requirements</h1>
+    <p class="q-sub">Select any features you want built into your Shopify store.</p>
+    
     <div class="field">
-      <label>Type of work (select all that apply)</label>
-      <div class="chips" id="reqChips">
-        <div class="chip" data-req="New store build">New store build</div>
-        <div class="chip" data-req="Store redesign">Store redesign</div>
-        <div class="chip" data-req="Product page / CRO">Product page / CRO</div>
-        <div class="chip" data-req="Logo / branding help">Logo / branding help</div>
-        <div class="chip" data-req="Product upload">Product upload</div>
-        <div class="chip" data-req="Migration">Migration</div>
+      <label>Store Boosters (Select all that apply)</label>
+      <div class="chips" id="chips">
+        <div class="chip" data-val="Instagram Feed integration">Instagram Feed</div>
+        <div class="chip" data-val="Whatsapp Chat Button integration">WhatsApp Live Chat</div>
+        <div class="chip" data-val="Product Reviews setup">Product Reviews</div>
+        <div class="chip" data-val="Multi-currency support">Multi-currency</div>
+        <div class="chip" data-val="Quantity upsells / bundle setup">Quantity Bundles</div>
+        <div class="chip" data-val="COD (Cash on Delivery) validation system">COD Fraud Protection</div>
+        <div class="chip" data-val="Custom font embedding">Custom Typography</div>
+        <div class="chip" data-val="Custom newsletter popup">Email Newsletter Popup</div>
       </div>
     </div>
-    <div class="row2">
-      <div class="field">
-        <label>Approx. no. of products</label>
-        <input id="products" type="text" placeholder="e.g. 10">
-      </div>
-      <div class="field">
-        <label>Preferred timeline</label>
-        <select id="timeline">
-          <option>5–7 days</option>
-          <option>7–10 days</option>
-          <option>2 weeks</option>
-          <option>Flexible</option>
-        </select>
-      </div>
+    
+    <div class="field" style="margin-top:30px">
+      <label for="notes">Additional notes or custom requests</label>
+      <textarea id="notes" placeholder="Tell us if you have any reference websites you like, or special features you need..."></textarea>
     </div>
-    <div class="field">
-      <label>Anything specific you want?</label>
-      <textarea id="notes" placeholder="Reference stores you like, must-have features, brand vibe, colors..."></textarea>
-    </div>
+
     <div class="nav-btns">
       <button class="btn btn-ghost" data-back>Back</button>
-      <button class="btn" data-next>Continue 
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
+      <button class="btn" data-next>Continue</button>
     </div>
   </div>
 
-  <!-- STEP 4: YOUR DETAILS -->
+  <!-- STEP 4: CONTACT INFO -->
   <div class="panel" data-panel="4">
-    <span class="eyebrow">Your details</span>
-    <h1 class="q display">How do we reach you?</h1>
-    <p class="q-sub">We'll send your free audit and updates here.</p>
+    <span class="eyebrow">Contact</span>
+    <h1 class="q display">Where should we connect?</h1>
+    <p class="q-sub">We'll send the design preview link and project updates to these details.</p>
+    
     <div class="field">
-      <label>Your full name *</label>
-      <input id="name" type="text" placeholder="e.g. Rahul Sharma">
+      <label for="name">Your Full Name</label>
+      <input id="name" type="text" placeholder="e.g. Rahul Sharma" required>
     </div>
-    <div class="row2">
-      <div class="field">
-        <label>WhatsApp number *</label>
-        <input id="phone" type="tel" placeholder="e.g. +91 99999 99999">
-      </div>
-      <div class="field">
-        <label>Email</label>
-        <input id="email" type="email" placeholder="you@email.com">
-      </div>
+    
+    <div class="field">
+      <label for="phone">WhatsApp Mobile Number</label>
+      <input id="phone" type="tel" placeholder="e.g. +91 99999 99999" required>
     </div>
+    
+    <div class="field">
+      <label for="email">Email Address</label>
+      <input id="email" type="email" placeholder="e.g. rahul@brand.com" required>
+    </div>
+
     <div class="nav-btns">
       <button class="btn btn-ghost" data-back>Back</button>
-      <button class="btn" data-next id="next4" disabled>Review agreement 
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
+      <button class="btn" id="next4" data-next disabled>Review Agreement</button>
     </div>
   </div>
 
-  <!-- STEP 5: AGREEMENT -->
+  <!-- STEP 5: SERVICE AGREEMENT -->
   <div class="panel" data-panel="5">
     <span class="eyebrow">Agreement</span>
-    <h1 class="q display">Review &amp; accept</h1>
-    <p class="q-sub">A simple working agreement, generated from your details.</p>
-    <div class="agreement" id="agreementBox"></div>
+    <h1 class="q display">Sign the agreement</h1>
+    <p class="q-sub">Please review the formal service terms below. Sign digitally to complete onboarding.</p>
+    
+    <div class="agreement" id="agreementBox">
+      <!-- Generated via JS -->
+    </div>
+    
     <div class="accept-box">
-      <input type="checkbox" id="agree">
-      <label for="agree">I have read and agree to the terms of this agreement, and I'm ready to be onboarded with Method Commerce.</label>
+      <input id="agree" type="checkbox">
+      <label for="agree">I confirm that I have read and agree to all the terms, scope of work, and billing terms outlined in this service agreement.</label>
     </div>
+    
     <div class="field sig-row">
-      <label>Type your full name to sign *</label>
-      <input id="signature" type="text" placeholder="Your full name">
+      <label for="signature">Type your name (Digital Signature)</label>
+      <input id="signature" type="text" placeholder="Type your full name to sign" required>
     </div>
+
     <div class="nav-btns">
       <button class="btn btn-ghost" data-back>Back</button>
-      <button class="btn" id="acceptBtn" disabled>Accept &amp; download 
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <button class="btn" id="acceptBtn" disabled>
+        Accept &amp; Download Contract
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       </button>
     </div>
-    <p class="hint">This is a simple plain-language working agreement, not formal legal advice.</p>
   </div>
 
-  <!-- STEP 6: SUCCESS -->
+  <!-- STEP 6: CONGRATS & HANDOFF -->
   <div class="panel" data-panel="6">
     <div class="success">
       <div class="check-circle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h1 class="display">You're onboarded! 🎉</h1>
-      <p>Your agreement has downloaded. Tap below to send us a quick confirmation on WhatsApp and we'll get started.</p>
+      <h1 class="display">You're onboarded!</h1>
+      <p>Your digital agreement has been downloaded as a PDF. We are ready to begin designing your custom Shopify store! 🚀</p>
       
       <div class="success-actions">
         <button class="btn wa-btn" id="waBtn">
-          Send confirmation on WhatsApp
-          <svg viewBox="0 0 24 24" fill="currentColor" style="width: 17px; height: 17px;"><path d="M12.004 2C6.51 2 2.014 6.5 2.014 12c0 2.16.7 4.21 2.02 5.91L2.5 22l4.31-1.39c1.62.98 3.51 1.5 5.47 1.5 5.51 0 10-4.5 10-10S17.51 2 12.004 2zm5.72 13.9c-.24.67-1.4 1.25-1.92 1.34-.48.08-.94.1-3.05-.75-2.7-1.08-4.43-3.83-4.57-4.01-.13-.18-1.09-1.45-1.09-2.77 0-1.32.69-1.97.94-2.24.25-.27.67-.34.88-.34.2 0 .4 0 .58.01.19 0 .44-.07.69.53.25.61.85 2.08.93 2.23.08.15.13.33.03.53-.1.2-.15.33-.3.51-.15.18-.32.41-.46.55-.16.16-.33.33-.14.65.19.32.84 1.38 1.8 2.24.96.86 1.77 1.27 2.07 1.41.31.14.49.12.67-.09.18-.21.79-.92.99-1.23.21-.31.42-.26.7-.15.28.11 1.77.83 2.07.98.31.15.51.22.58.35.08.13.08.75-.16 1.42z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#FFF" style="width:16px;height:16px"><path d="M12.031 2C6.496 2 2 6.502 2 12.043c0 1.83.493 3.618 1.429 5.187L2 22l4.916-1.29a9.98 9.98 0 005.111 1.383c5.534 0 10.03-4.502 10.03-10.044C22.062 6.502 17.566 2 12.031 2zm6.347 14.195c-.276.776-1.396 1.41-1.976 1.504-.58.093-1.302.166-3.805-.838-3.197-1.3-5.228-4.551-5.388-4.762-.16-.211-1.282-1.704-1.282-3.253 0-1.55.807-2.312 1.096-2.616.29-.304.637-.38.85-.38.212 0 .424.004.61.012.196.008.463-.075.722.56.275.67.939 2.298 1.022 2.467.082.169.137.366.023.59-.114.225-.172.366-.343.564-.171.197-.36.438-.515.587-.172.166-.353.347-.152.69.201.343.896 1.478 1.92 2.392 1.314 1.173 2.424 1.536 2.766 1.696.342.16.543.118.697-.059.155-.178.665-.776.844-1.04.18-.263.359-.22.607-.128.247.094 1.571.741 1.84.876.269.135.448.203.515.317.067.114.067.662-.209 1.438z"/></svg>
+          Ping on WhatsApp to Start
         </button>
-        <button class="btn btn-ghost" id="redownload">Download agreement again</button>
+        <button class="btn btn-ghost" id="redownload">Redownload PDF Agreement</button>
+      </div>
+
+      <div class="summary">
+        <h4 style="font-family:var(--font-display);margin-bottom:12px;color:#fff">Onboarding Summary</h4>
+        <div id="summary"></div>
       </div>
       
-      <div class="summary" id="summary"></div>
+      <p class="hint">Our team will reach out on your WhatsApp within 1–2 hours. Let's make it big! 🚀</p>
     </div>
   </div>
-
 </div>
 
 <script>
-  // ===== CONFIG: put your WhatsApp number here (country code, no + or spaces) =====
-  const WA_NUMBER = '919999999999';
-
-  const data = {
-    plan:'',
-    price:0,
-    brand:'',
-    category:'',
-    website:'',
-    insta:'',
-    reqs:[],
-    products:'',
-    timeline:'5–7 days',
-    notes:'',
-    name:'',
-    phone:'',
-    email:'',
-    signature:'',
-    date:''
-  };
+  const WA_NUMBER = '919999999999'; // D2C Studio Whatsapp
   
   let step = 1;
-  const totalSteps = 6;
-
-  const panels = document.querySelectorAll('.panel');
-  const bars = document.querySelectorAll('.pbar');
-  const stepLabel = document.getElementById('stepLabel');
+  const totalSteps = 5;
+  
+  const data = {
+    plan: 'Convert',
+    price: 8999,
+    brand: '',
+    products: '1 - 10 products',
+    timeline: 'As soon as possible (Urgent)',
+    reqs: [],
+    notes: '',
+    name: '',
+    phone: '',
+    email: '',
+    signature: '',
+    date: ''
+  };
 
   function render(){
-    panels.forEach(p => p.classList.toggle('active', +p.dataset.panel === step));
-    bars.forEach(b => {
-      const s = +b.dataset.s;
-      b.classList.toggle('done', s < step);
-      b.classList.toggle('active', s === step);
+    // step label
+    document.getElementById('stepLabel').textContent = `STEP ${step} OF ${totalSteps}`;
+    
+    // progress bar animation
+    document.querySelectorAll('.pbar').forEach((p, idx) => {
+      p.className = 'pbar';
+      const sNum = idx + 1;
+      if (sNum < step) p.classList.add('done');
+      if (sNum === step) p.classList.add('active');
     });
-    if(step <= 5){
-      stepLabel.textContent = `STEP ${step} OF 5`;
-      stepLabel.style.display = 'block';
-      document.querySelector('.progress').style.display = 'flex';
-    } else {
-      stepLabel.style.display = 'none';
-      document.querySelector('.progress').style.display = 'none';
-    }
-    window.scrollTo({top:0, behavior:'smooth'});
+
+    // panels visibility
+    document.querySelectorAll('.panel').forEach(p => {
+      const pNum = Number(p.getAttribute('data-panel'));
+      p.classList.toggle('active', pNum === step);
+    });
+
+    // scroll up to focus
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
-  // PLAN select
-  document.querySelectorAll('.plan').forEach(p => p.addEventListener('click', () => {
-    document.querySelectorAll('.plan').forEach(x => x.classList.remove('sel'));
-    p.classList.add('sel');
-    data.plan = p.dataset.plan;
-    data.price = +p.dataset.price;
-    document.getElementById('next1').disabled = false;
+  // STEP 1: Plan Picker
+  const pCards = document.querySelectorAll('.plan');
+  pCards.forEach(c => c.addEventListener('click', () => {
+    pCards.forEach(x => x.classList.remove('sel'));
+    c.classList.add('sel');
+    data.plan = c.getAttribute('data-plan');
+    data.price = Number(c.getAttribute('data-price'));
   }));
 
-  // requirement chips
-  document.querySelectorAll('#reqChips .chip').forEach(c => c.addEventListener('click', () => {
-    c.classList.toggle('sel');
-    data.reqs = [...document.querySelectorAll('#reqChips .chip.sel')].map(x => x.dataset.req);
+  // Step 2 validations
+  const brandIn = document.getElementById('brand');
+  const next2 = document.getElementById('next2');
+  const v2 = () => {
+    data.brand = brandIn.value.trim();
+    next2.disabled = !data.brand;
+  };
+  brandIn.addEventListener('input', v2);
+  document.getElementById('products').addEventListener('change', e => data.products = e.target.value);
+
+  // Step 3 chips selection
+  document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => {
+    const val = ch.getAttribute('data-val');
+    const isSel = ch.classList.toggle('sel');
+    if (isSel) {
+      data.reqs.push(val);
+    } else {
+      data.reqs = data.reqs.filter(r => r !== val);
+    }
   }));
 
-  // live binds + validation
+  // Step 4 inputs & validation
+  const next4 = document.getElementById('next4');
+  const v4 = () => {
+    const n = document.getElementById('name').value.trim();
+    const p = document.getElementById('phone').value.trim();
+    next4.disabled = !(n && p);
+  };
+
   const bind = (id, key, validateBtn) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -683,32 +729,17 @@
       if (validateBtn) validateBtn();
     });
   };
-  
-  const v2 = () => {
-    document.getElementById('next2').disabled = !data.brand;
-  };
-  
-  const v4 = () => {
-    document.getElementById('next4').disabled = !(data.name && data.phone);
-  };
-  
-  bind('brand', 'brand', v2);
-  bind('category', 'category');
-  bind('website', 'website');
-  bind('insta', 'insta');
-  bind('products', 'products');
+
   bind('notes', 'notes');
-  
   document.getElementById('timeline').addEventListener('change', e => data.timeline = e.target.value);
-  
   bind('name', 'name', v4);
   bind('phone', 'phone', v4);
   bind('email', 'email');
 
-  // nav
+  // Nav actions
   document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => {
     if (step === 4) buildAgreement();
-    step = Math.min(totalSteps, step + 1);
+    step = Math.min(totalSteps + 1, step + 1);
     render();
   }));
   
@@ -717,7 +748,7 @@
     render();
   }));
 
-  // agreement accept validation
+  // Agreement validations
   const agree = document.getElementById('agree');
   const sig = document.getElementById('signature');
   const acceptBtn = document.getElementById('acceptBtn');
@@ -729,7 +760,6 @@
   
   agree.addEventListener('change', vAccept);
   sig.addEventListener('input', vAccept);
-
 
   function todayStr(){
     const d = new Date();
@@ -793,7 +823,7 @@
     };
     
     // Header banner line
-    doc.setFillColor(27, 67, 255); // Cobalt
+    doc.setFillColor(47, 88, 255); // Cobalt
     doc.rect(M, y, W, 4, 'F');
     y += 24;
     
@@ -871,7 +901,6 @@
     
     doc.save(`Method-Commerce-Agreement-${(data.brand || 'client').replace(/\s+/g, '-')}.pdf`);
   }
-
 
   function fillSummary(){
     const inr = n => 'INR ' + Number(n).toLocaleString('en-IN');
