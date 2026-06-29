@@ -195,7 +195,7 @@
   .cases{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:48px}
   .case{background:#191a1f;border:1px solid var(--line-d);border-radius:18px;overflow:hidden;display:block;transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s}
   .case:hover{transform:translateY(-4px);box-shadow:0 20px 40px -10px rgba(0,0,0,0.5)}
-  .case-media{height:250px;background:radial-gradient(120% 120% at 50% 0,#23242b,#15161a);display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
+  .case-media{height:300px;background:radial-gradient(120% 120% at 50% 0,#23242b,#15161a);display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
   .case-media img {
     width: 100%;
     height: 100%;
@@ -296,15 +296,7 @@
     .hero-visual{display:none !important}
     .steps{grid-template-columns:1fr 1fr}
     .nav-links{display:none}.burger{display:flex}
-    .nav-cta .btn {
-      display: inline-flex !important;
-      padding: 9px 14px !important;
-      font-size: 13px !important;
-      border-radius: 8px !important;
-      box-shadow: none !important;
-    }
-    .nav-cta .btn .dt-txt { display: none !important; }
-    .nav-cta .btn .mb-txt { display: inline !important; }
+    .nav-cta .btn { display: none !important; }
     
     /* Horizontal auto-scroll tracks on mobile */
     .cases, .tiers, .chats {
@@ -334,7 +326,15 @@
   @media(max-width:600px){
     .feat-grid{grid-template-columns:1fr}
     .steps{grid-template-columns:1fr}
-    .stats{gap:22px;flex-wrap:wrap}
+    .stats{
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 12px !important;
+      margin-top: 24px !important;
+      padding-top: 18px !important;
+    }
+    .stat .num { font-size: 26px !important; }
+    .stat .lab { font-size: 10px !important; letter-spacing: 0 !important; }
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
@@ -352,12 +352,12 @@
       <a href="#faq">FAQ</a>
     </div>
     <div class="nav-cta">
-      <a href="#start" class="btn"><span class="dt-txt">Free store audit</span><span class="mb-txt">Free Audit</span></a>
+      <a href="onboarding.html" class="btn"><span class="dt-txt">Free store audit</span><span class="mb-txt">Free Audit</span></a>
       <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#method">The Method</a><a href="#work">Work</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#start">Free store audit</a>
+    <a href="#method">The Method</a><a href="#work">Work</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="onboarding.html">Free store audit</a>
   </div>
 </nav>
 
@@ -369,13 +369,13 @@
       <h1>Premium Shopify<br>stores, built to <span class="hl">sell</span>.</h1>
       <p class="lead">We design &amp; build high-converting Shopify stores for growing Indian brands — and you see the full design <b>before</b> you pay.</p>
       <div class="hero-cta">
-        <a href="#start" class="btn">Get a free store audit <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="onboarding.html" class="btn">Get a free store audit <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a href="#pricing" class="btn outline">See pricing</a>
       </div>
-      <div class="trust-row"><span>No advance</span><span>See before you pay</span><span>Live in 5–10 days</span></div>
+      <div class="trust-row"><span>No advance</span><span>See before you pay</span><span>Live in 7 days</span></div>
       <div class="stats">
         <div class="stat"><div class="num" data-count="20">0+</div><div class="lab">Stores shipped</div></div>
-        <div class="stat"><div class="num" data-count="10" data-suffix="">0</div><div class="lab">Day launch</div></div>
+        <div class="stat"><div class="num" data-count="7" data-suffix="">0</div><div class="lab">Day launch</div></div>
         <div class="stat"><div class="num" data-count="100" data-suffix="%">0%</div><div class="lab">See before you pay</div></div>
       </div>
     </div>
@@ -523,18 +523,18 @@
       <div class="tier reveal">
         <div class="tname">Launch</div><div class="price">₹4,999</div><div class="tg">Get live, properly.</div>
         <ul><li>Theme-based store setup</li><li>Up to 10 products added</li><li>Core pages + policies</li><li>Mobile-optimized layout</li><li>Payments &amp; shipping setup</li></ul>
-        <a href="#start" class="btn outline">Choose Launch</a>
+        <a href="onboarding.html" class="btn outline">Choose Launch</a>
       </div>
       <div class="tier pop reveal">
         <span class="poptag">MOST POPULAR</span>
         <div class="tname">Convert</div><div class="price">₹8,999</div><div class="tg">Not just live — built to sell.</div>
         <ul><li>Everything in Launch</li><li>Custom homepage sections</li><li>Conversion-focused product pages</li><li>Sticky cart + trust elements</li><li>Basic CRO setup</li></ul>
-        <a href="#start" class="btn yellow">Choose Convert</a>
+        <a href="onboarding.html" class="btn yellow">Choose Convert</a>
       </div>
       <div class="tier reveal">
         <div class="tname">Brand</div><div class="price">₹12,999</div><div class="tg">Your flagship store.</div>
         <ul><li>Everything in Convert</li><li>Deeper custom design</li><li>Niche-specific brand feel</li><li>Reviews &amp; upsell setup</li><li>Full brand polish</li></ul>
-        <a href="#start" class="btn outline">Choose Brand</a>
+        <a href="onboarding.html" class="btn outline">Choose Brand</a>
       </div>
     </div>
     <div class="slider-dots" id="pricingDots"></div>
@@ -609,7 +609,7 @@
 </section>
 
 <!-- Floating WhatsApp -->
-<a id="waFloat" href="#start" aria-label="Chat on WhatsApp" class="wa-float">
+<a id="waFloat" href="onboarding.html" aria-label="Chat on WhatsApp" class="wa-float">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.5 15.3L2 22l4.8-1.5A10 10 0 1012 2zm0 18a8 8 0 01-4.1-1.1l-.3-.2-2.8.9.9-2.7-.2-.3A8 8 0 1112 20zm4.6-5.8c-.25-.13-1.47-.72-1.7-.8-.23-.09-.4-.13-.56.12-.17.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.13.17 1.73 2.64 4.2 3.7.58.26 1.04.41 1.4.52.59.19 1.12.16 1.55.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29z"/></svg>
   <span class="wa-pulse"></span>
 </a>
@@ -618,7 +618,7 @@
 <footer>
   <div class="wrap foot-in">
     <a href="#top" class="brand"><svg viewBox="0 0 100 100" width="26" height="26" style="flex-shrink:0;margin-right:9px;"><rect width="100" height="100" rx="22" fill="var(--cobalt)"/><path d="M27 66 V34 C27 31 29 29 31 31 L50 52 L69 31 C71 29 73 31 73 34 V66" fill="none" stroke="#FFF" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="50,25 43,35 57,35" fill="#FFF"/></svg>Method Commerce</a>
-    <div class="foot-links"><a href="#method">Method</a><a href="#work">Work</a><a href="#pricing">Pricing</a><a href="#start">Get started</a></div>
+    <div class="foot-links"><a href="#method">Method</a><a href="#work">Work</a><a href="#pricing">Pricing</a><a href="onboarding.html">Get started</a></div>
   </div>
   <div class="wrap"><p class="foot-copy">© 2026 Method Commerce — Premium Shopify stores for growing Indian brands.</p></div>
 </footer>
