@@ -467,7 +467,7 @@
           <div class="pn">Convert</div>
           <div class="pd">Everything in Launch + custom homepage sections, conversion PDPs, sticky cart, CRO.</div>
         </div>
-        <div class="pp">INR 7,999</div>
+        <div class="pp">INR 8,999</div>
       </div>
       
       <div class="plan" data-plan="Brand" data-price="12999">
@@ -645,15 +645,24 @@
   let step = 1;
   const totalSteps = 5;
   
+  // Parse query parameters for custom plans, prices, advances, client, name
+  const urlParams = new URLSearchParams(window.location.search);
+  const qPrice = urlParams.get('price');
+  const qAdvance = urlParams.get('advance');
+  const qPlan = urlParams.get('plan');
+  const qClient = urlParams.get('client');
+  const qName = urlParams.get('name');
+
   const data = {
-    plan: 'Convert',
-    price: 7999,
-    brand: '',
+    plan: qPlan || 'Convert',
+    price: qPrice ? Number(qPrice) : 8999,
+    advance: qAdvance ? Number(qAdvance) : 0,
+    brand: qClient || '',
     products: '1 - 10 products',
     timeline: 'As soon as possible (Urgent)',
     reqs: [],
     notes: '',
-    name: '',
+    name: qName || '',
     phone: '',
     email: '',
     signature: '',
@@ -772,7 +781,7 @@
       'Launch': ['Theme-based Shopify store setup', 'Up to 10 products added', 'Core pages (home, product, about, contact, policies)', 'Mobile-optimized layout', 'Payments & shipping setup'],
       'Convert': ['Everything in Launch', 'Custom homepage sections', 'Conversion-focused product pages', 'Sticky add-to-cart & trust elements', 'Basic CRO setup'],
       'Brand': ['Everything in Convert', 'Deeper custom design', 'Niche-specific brand feel', 'Reviews & upsell setup', 'Full brand polish']
-    }[data.plan] || [];
+    }[data.plan] || ['Custom Shopify store design & development tailored to Client requirements.'];
     
     const reqLine = data.reqs.length ? data.reqs.join(', ') : '—';
     
@@ -782,7 +791,14 @@
         ['', `This agreement is made on ${data.date} between Method Commerce ("the Studio"), a Shopify store design studio, and ${data.name || 'the Client'} representing ${data.brand || 'the brand'} ("the Client").`],
         ['1. Scope of work', `The Studio will deliver the "${data.plan}" package, including:\n• ${deliverables.join('\n• ')}\n\nAdditional requirements noted by the Client: ${reqLine}.\nApprox. products: ${data.products || '—'}.\nClient notes: ${data.notes || '—'}.`],
         ['2. Price', `Total project fee: ${inr(data.price)} (one-time).`],
-        ['3. Payment terms', `The Studio follows a design-preview-first model. The Client will see a live preview of the store before any payment is due. Payment of ${inr(data.price)} is due upon the Client's approval of the design and before final handover / store launch. No advance is required.`],
+        ['3. Payment terms', (() => {
+          if (data.advance > 0) {
+            const advVal = Math.round(data.price * (data.advance / 100));
+            const balVal = data.price - advVal;
+            return `The Client agrees to pay a ${data.advance}% advance payment of ${inr(advVal)} to initiate the design and development work. The remaining ${100 - data.advance}% balance of ${inr(balVal)} is due upon the Client's approval of the design and before final handover / store launch.`;
+          }
+          return `The Studio follows a design-preview-first model. The Client will see a live preview of the store before any payment is due. Payment of ${inr(data.price)} is due upon the Client's approval of the design and before final handover / store launch. No advance is required.`;
+        })()],
         ['4. Timeline', `Estimated delivery: ${data.timeline} from the date the Client provides all required materials (logo, product details, images, content).`],
         ['5. Revisions', 'The package includes up to 2 rounds of revisions on the approved design. Further changes may be quoted separately.'],
         ['6. Client responsibilities', 'The Client agrees to provide brand assets, product information, images and content needed to complete the work, in a timely manner.'],
@@ -903,9 +919,15 @@
 
   function fillSummary(){
     const inr = n => 'INR ' + Number(n).toLocaleString('en-IN');
+    let planDesc = `${data.plan} · ${inr(data.price)}`;
+    if (data.advance > 0) {
+      const advVal = Math.round(data.price * (data.advance / 100));
+      const balVal = data.price - advVal;
+      planDesc += `<br><span style="font-size:11.5px;color:var(--muted)">(${data.advance}% Advance: ${inr(advVal)} / Balance: ${inr(balVal)})</span>`;
+    }
     document.getElementById('summary').innerHTML = `
       <div class="sr"><span class="k">Brand</span><span class="v">${data.brand || '—'}</span></div>
-      <div class="sr"><span class="k">Plan</span><span class="v">${data.plan} · ${inr(data.price)}</span></div>
+      <div class="sr"><span class="k">Plan</span><span class="v">${planDesc}</span></div>
       <div class="sr"><span class="k">Timeline</span><span class="v">${data.timeline}</span></div>
       <div class="sr"><span class="k">Signed by</span><span class="v">${data.signature}</span></div>
       <div class="sr"><span class="k">Date</span><span class="v">${data.date}</span></div>`;
@@ -922,18 +944,70 @@
 
   document.getElementById('waBtn').addEventListener('click', () => {
     const inr = n => 'INR ' + Number(n).toLocaleString('en-IN');
-    const text = `✅ Onboarding complete — Method Commerce%0A%0AName: ${data.name}%0ABrand: ${data.brand}%0APlan: ${data.plan} (${inr(data.price)})%0ATimeline: ${data.timeline}%0AWhatsApp: ${data.phone}%0A%0AAgreement accepted & signed on ${data.date}. Ready to start! 🚀`;
+    let planDetails = `${data.plan} (${inr(data.price)})`;
+    if (data.advance > 0) {
+      const advVal = Math.round(data.price * (data.advance / 100));
+      const balVal = data.price - advVal;
+      planDetails += ` [${data.advance}% Advance: ${inr(advVal)} / Balance: ${inr(balVal)}]`;
+    }
+    const text = `✅ Onboarding complete — Method Commerce%0A%0AName: ${data.name}%0ABrand: ${data.brand}%0APlan: ${planDetails}%0ATimeline: ${data.timeline}%0AWhatsApp: ${data.phone}%0A%0AAgreement accepted & signed on ${data.date}. Ready to start! 🚀`;
     window.open(`https://wa.me/${WA_NUMBER}?text=${text}`, '_blank');
   });
 
-  // PARSE QUERY PARAMETERS FOR DYNAMIC PRE-SELECTION
+  // PARSE QUERY PARAMETERS FOR DYNAMIC PRE-SELECTION AND FORM POPULATION
   window.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const planParam = urlParams.get('plan');
-    if (planParam) {
-      const targetPlan = document.querySelector(`.plan[data-plan="${planParam}"]`);
+    // Pre-fill Brand and Name if provided
+    if (data.brand) {
+      const brandInput = document.getElementById('brand');
+      if (brandInput) {
+        brandInput.value = data.brand;
+        v2(); // trigger validation for brand step
+      }
+    }
+    if (data.name) {
+      const nameInput = document.getElementById('name');
+      if (nameInput) nameInput.value = data.name;
+    }
+
+    const defaultPlans = ['Launch', 'Convert', 'Brand'];
+    if (defaultPlans.includes(data.plan)) {
+      const targetPlan = document.querySelector(`.plan[data-plan="${data.plan}"]`);
       if (targetPlan) {
-        targetPlan.click();
+        pCards.forEach(x => x.classList.remove('sel'));
+        targetPlan.classList.add('sel');
+        if (qPrice) {
+          targetPlan.setAttribute('data-price', qPrice);
+          const priceLabel = targetPlan.querySelector('.pp');
+          if (priceLabel) priceLabel.textContent = '₹' + Number(qPrice).toLocaleString('en-IN');
+        }
+      }
+    } else {
+      // Dynamic Custom Plan Card
+      const plansContainer = document.querySelector('.plans');
+      if (plansContainer) {
+        const customCard = document.createElement('div');
+        customCard.className = 'plan sel';
+        customCard.setAttribute('data-plan', data.plan);
+        customCard.setAttribute('data-price', data.price);
+        
+        const advText = data.advance > 0 ? `${data.advance}% Advance` : 'No advance';
+        customCard.innerHTML = `
+          <div class="p-head">
+            <div class="pn">${data.plan}</div>
+            <div class="pp">₹${Number(data.price).toLocaleString('en-IN')}</div>
+          </div>
+          <div class="pd">Custom plan tailored to client specifications. Payment Terms: ${advText}.</div>
+        `;
+        
+        pCards.forEach(x => x.classList.remove('sel'));
+        plansContainer.appendChild(customCard);
+        
+        customCard.addEventListener('click', () => {
+          document.querySelectorAll('.plan').forEach(x => x.classList.remove('sel'));
+          customCard.classList.add('sel');
+          data.plan = customCard.getAttribute('data-plan');
+          data.price = Number(customCard.getAttribute('data-price'));
+        });
       }
     }
   });

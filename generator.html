@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Method Commerce — Onboarding Link Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#121214; --cobalt:#1B43FF; --cobalt-d:#1536d6; --yellow:#FFD100;
+    --cream:#F4F2EA; --white:#F7F7F2; --muted:#6b6c66; --line:#e6e4da;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  .header{
+    border-bottom:1px solid var(--line);
+    background:rgba(244,242,234,.82);
+    backdrop-filter:blur(12px);
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand{
+    font-family:'Anton',sans-serif;
+    font-size:20px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+  }
+  .container{
+    max-width:600px;
+    margin:40px auto 80px;
+    padding:0 24px;
+    width:100%;
+    flex:1;
+  }
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:32px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.03);
+  }
+  h1{
+    font-family:'Anton',sans-serif;
+    font-size:32px;
+    text-transform:uppercase;
+    line-height:1;
+    margin-bottom:8px;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:14.5px;
+    margin-bottom:24px;
+  }
+  .field{
+    margin-bottom:20px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+  .field input, .field select{
+    width:100%;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--ink);
+    transition:border-color .2s;
+  }
+  .field input:focus, .field select:focus{
+    outline:none;
+    border-color:var(--cobalt);
+  }
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--cobalt);
+    color:#fff;
+    font-weight:600;
+    font-size:15px;
+    padding:13px 24px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    width:100%;
+    transition:background .2s, transform .15s;
+    box-shadow:0 4px 12px rgba(27,67,255,0.15);
+  }
+  .btn:hover{
+    background:var(--cobalt-d);
+    transform:translateY(-1px);
+  }
+  .btn.outline{
+    background:transparent;
+    color:var(--ink);
+    box-shadow:none;
+    border:1px solid var(--line);
+  }
+  .btn.outline:hover{
+    background:var(--white);
+    border-color:var(--ink);
+  }
+  .result-box{
+    margin-top:28px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    display:none;
+  }
+  .result-box.active{
+    display:block;
+    animation:fadeIn .3s ease-out;
+  }
+  @keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:none}
+  }
+  .url-display{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px;
+    font-size:13.5px;
+    word-break:break-all;
+    font-family:monospace;
+    margin-bottom:12px;
+    color:var(--muted);
+  }
+  .action-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .footer{
+    text-align:center;
+    padding:24px;
+    color:var(--muted);
+    font-size:12.5px;
+    border-top:1px solid var(--line);
+    background:rgba(244,242,234,.5);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <svg viewBox="0 0 100 100" width="26" height="26" style="flex-shrink:0;"><rect width="100" height="100" rx="22" fill="var(--cobalt)"/><path d="M27 66 V34 C27 31 29 29 31 31 L50 52 L69 31 C71 29 73 31 73 34 V66" fill="none" stroke="#FFF" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="50,25 43,35 57,35" fill="#FFF"/></svg>
+    Method Commerce
+  </div>
+  <a href="index.html" class="btn outline" style="width:auto;padding:8px 16px;font-size:13px;">View Website</a>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h1>Link Generator</h1>
+    <div class="subtitle">Generate custom onboarding links with tailored price and payment terms.</div>
+    
+    <div class="field">
+      <label for="c-brand">Brand Name / Client Company</label>
+      <input type="text" id="c-brand" placeholder="e.g. Lune Jewels">
+    </div>
+
+    <div class="field">
+      <label for="c-name">Client Contact Person Name</label>
+      <input type="text" id="c-name" placeholder="e.g. Riya Patel">
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="c-plan-select">Plan Package</label>
+        <select id="c-plan-select">
+          <option value="Convert">Convert (Standard)</option>
+          <option value="Launch">Launch</option>
+          <option value="Brand">Brand</option>
+          <option value="Custom">Custom Plan...</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="c-price">Total Price (INR)</label>
+        <input type="number" id="c-price" value="8999" placeholder="e.g. 15000">
+      </div>
+    </div>
+
+    <div class="field" id="custom-plan-row" style="display:none;">
+      <label for="c-plan-custom">Custom Plan Name</label>
+      <input type="text" id="c-plan-custom" placeholder="e.g. Custom Growth Store">
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="c-advance-select">Payment Terms (Advance %)</label>
+        <select id="c-advance-select">
+          <option value="0">0% - No Advance (Default)</option>
+          <option value="10">10% Advance</option>
+          <option value="25">25% Advance</option>
+          <option value="50">50% Advance</option>
+          <option value="custom">Custom Percentage...</option>
+        </select>
+      </div>
+      <div class="field" id="custom-advance-row" style="visibility:hidden;">
+        <label for="c-advance-custom">Custom Advance %</label>
+        <input type="number" id="c-advance-custom" min="0" max="100" placeholder="e.g. 35">
+      </div>
+    </div>
+
+    <button class="btn" id="generateBtn">Generate Onboarding Link</button>
+
+    <div class="result-box" id="resultBox">
+      <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;text-transform:uppercase;">Generated Link:</label>
+      <div class="url-display" id="urlDisplay"></div>
+      <div class="action-buttons">
+        <button class="btn outline" id="copyBtn">Copy Link</button>
+        <button class="btn" id="waBtn" style="background:#25D366;box-shadow:0 4px 12px rgba(37,211,102,0.15)">Send via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Method Commerce — Shopify Store Design Studio Link Builder
+</div>
+
+<script>
+  const planSelect = document.getElementById('c-plan-select');
+  const customPlanRow = document.getElementById('custom-plan-row');
+  const planCustom = document.getElementById('c-plan-custom');
+  const priceInput = document.getElementById('c-price');
+
+  planSelect.addEventListener('change', () => {
+    if (planSelect.value === 'Custom') {
+      customPlanRow.style.display = 'block';
+      priceInput.value = '';
+    } else {
+      customPlanRow.style.display = 'none';
+      if (planSelect.value === 'Launch') priceInput.value = 4999;
+      if (planSelect.value === 'Convert') priceInput.value = 8999;
+      if (planSelect.value === 'Brand') priceInput.value = 12999;
+    }
+  });
+
+  const advanceSelect = document.getElementById('c-advance-select');
+  const customAdvanceRow = document.getElementById('custom-advance-row');
+  const advanceCustom = document.getElementById('c-advance-custom');
+
+  advanceSelect.addEventListener('change', () => {
+    if (advanceSelect.value === 'custom') {
+      customAdvanceRow.style.visibility = 'visible';
+    } else {
+      customAdvanceRow.style.visibility = 'hidden';
+      advanceCustom.value = '';
+    }
+  });
+
+  let generatedUrl = '';
+
+  document.getElementById('generateBtn').addEventListener('click', () => {
+    const brand = document.getElementById('c-brand').value.trim();
+    const name = document.getElementById('c-name').value.trim();
+    const price = priceInput.value.trim();
+    
+    let plan = planSelect.value;
+    if (plan === 'Custom') {
+      plan = planCustom.value.trim() || 'Custom Plan';
+    }
+
+    let advance = advanceSelect.value;
+    if (advance === 'custom') {
+      advance = advanceCustom.value.trim() || '0';
+    }
+
+    // Build query params
+    const params = new URLSearchParams();
+    if (plan) params.append('plan', plan);
+    if (price) params.append('price', price);
+    if (advance && advance !== '0') params.append('advance', advance);
+    if (brand) params.append('client', brand);
+    if (name) params.append('name', name);
+
+    // Get origin base url
+    const origin = window.location.origin;
+    const path = window.location.pathname.replace('generator.html', 'onboarding.html');
+    generatedUrl = `${origin}${path}?${params.toString()}`;
+
+    // Show result
+    const resultBox = document.getElementById('resultBox');
+    const urlDisplay = document.getElementById('urlDisplay');
+    urlDisplay.textContent = generatedUrl;
+    resultBox.classList.add('active');
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    if (!generatedUrl) return;
+    navigator.clipboard.writeText(generatedUrl).then(() => {
+      alert('Link copied to clipboard!');
+    }).catch(err => {
+      alert('Failed to copy: ' + err);
+    });
+  });
+
+  document.getElementById('waBtn').addEventListener('click', () => {
+    if (!generatedUrl) return;
+    const brand = document.getElementById('c-brand').value.trim() || 'Client';
+    const text = `Hi ${brand}! Here is your customized Method Commerce onboarding link to review the scope and sign the service agreement: ${encodeURIComponent(generatedUrl)}`;
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  });
+</script>
+</body>
+</html>
