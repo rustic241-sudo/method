@@ -416,7 +416,7 @@
 
     // Get origin base url
     const origin = window.location.origin;
-    const path = window.location.pathname.replace('generator.html', 'onboarding.html');
+    const path = window.location.pathname.replace('generator.html', 'onboarding.html').replace('generator', 'onboarding');
     generatedUrl = `${origin}${path}?${params.toString()}`;
 
     // Show result
