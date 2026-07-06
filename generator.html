@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#121214; --cobalt:#1B43FF; --cobalt-d:#1536d6; --yellow:#FFD100;
+    --ink:#121214; --cobalt:#1B43FF; --cobalt-d:#1536d6; --yellow:#FFD100; --red:#E82A2A;
     --cream:#F4F2EA; --white:#F7F7F2; --muted:#6b6c66; --line:#e6e4da;
     --radius:16px;
   }
@@ -24,6 +24,35 @@
     display:flex;
     flex-direction:column;
   }
+  
+  /* Login Overlay */
+  .login-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--cream);
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    transition:opacity .3s ease, visibility .3s;
+  }
+  .login-overlay.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  
+  /* Main Content Wrapper */
+  .main-content{
+    display:none;
+  }
+  .main-content.active{
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+
   .header{
     border-bottom:1px solid var(--line);
     background:rgba(244,242,234,.82);
@@ -55,6 +84,7 @@
     border-radius:var(--radius);
     padding:32px;
     box-shadow:0 10px 30px rgba(0,0,0,0.03);
+    width:100%;
   }
   h1{
     font-family:'Anton',sans-serif;
@@ -121,6 +151,11 @@
     background:var(--cobalt-d);
     transform:translateY(-1px);
   }
+  .btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    transform:none;
+  }
   .btn.outline{
     background:transparent;
     color:var(--ink);
@@ -145,6 +180,18 @@
     from{opacity:0;transform:translateY(10px)}
     to{opacity:1;transform:none}
   }
+  
+  /* Input error shake */
+  .shake {
+    animation: shakeEffect 0.4s ease;
+    border-color: var(--red) !important;
+  }
+  @keyframes shakeEffect {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+
   .url-display{
     background:var(--white);
     border:1px solid var(--line);
@@ -168,90 +215,150 @@
     font-size:12.5px;
     border-top:1px solid var(--line);
     background:rgba(244,242,234,.5);
+    margin-top:auto;
   }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="brand">
-    <svg viewBox="0 0 100 100" width="26" height="26" style="flex-shrink:0;"><rect width="100" height="100" rx="22" fill="var(--cobalt)"/><path d="M27 66 V34 C27 31 29 29 31 31 L50 52 L69 31 C71 29 73 31 73 34 V66" fill="none" stroke="#FFF" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="50,25 43,35 57,35" fill="#FFF"/></svg>
-    Method Commerce
-  </div>
-  <a href="index.html" class="btn outline" style="width:auto;padding:8px 16px;font-size:13px;">View Website</a>
-</div>
-
-<div class="container">
-  <div class="card">
-    <h1>Link Generator</h1>
-    <div class="subtitle">Generate custom onboarding links with tailored price and payment terms.</div>
+<!-- Access Protection Screen -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="card" style="max-width:400px; text-align:center;">
+    <div class="brand" style="justify-content:center; margin-bottom:24px;">
+      <svg viewBox="0 0 100 100" width="30" height="30" style="flex-shrink:0;"><rect width="100" height="100" rx="22" fill="var(--cobalt)"/><path d="M27 66 V34 C27 31 29 29 31 31 L50 52 L69 31 C71 29 73 31 73 34 V66" fill="none" stroke="#FFF" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="50,25 43,35 57,35" fill="#FFF"/></svg>
+      Method Commerce
+    </div>
+    <h2 style="font-family:'Anton',sans-serif; font-size:24px; text-transform:uppercase; margin-bottom:8px;">Admin Unlock</h2>
+    <p style="color:var(--muted); font-size:13.5px; margin-bottom:20px;">Enter password to access Onboarding Link Generator.</p>
     
-    <div class="field">
-      <label for="c-brand">Brand Name / Client Company</label>
-      <input type="text" id="c-brand" placeholder="e.g. Lune Jewels">
+    <div class="field" style="margin-bottom:16px;">
+      <input type="password" id="loginPass" placeholder="Enter password" style="text-align:center;">
+      <div id="loginError" style="color:var(--red); font-size:12.5px; margin-top:8px; display:none;">Invalid password!</div>
     </div>
-
-    <div class="field">
-      <label for="c-name">Client Contact Person Name</label>
-      <input type="text" id="c-name" placeholder="e.g. Riya Patel">
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="c-plan-select">Plan Package</label>
-        <select id="c-plan-select">
-          <option value="Convert">Convert (Standard)</option>
-          <option value="Launch">Launch</option>
-          <option value="Brand">Brand</option>
-          <option value="Custom">Custom Plan...</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="c-price">Total Price (INR)</label>
-        <input type="number" id="c-price" value="8999" placeholder="e.g. 15000">
-      </div>
-    </div>
-
-    <div class="field" id="custom-plan-row" style="display:none;">
-      <label for="c-plan-custom">Custom Plan Name</label>
-      <input type="text" id="c-plan-custom" placeholder="e.g. Custom Growth Store">
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="c-advance-select">Payment Terms (Advance %)</label>
-        <select id="c-advance-select">
-          <option value="0">0% - No Advance (Default)</option>
-          <option value="10">10% Advance</option>
-          <option value="25">25% Advance</option>
-          <option value="50">50% Advance</option>
-          <option value="custom">Custom Percentage...</option>
-        </select>
-      </div>
-      <div class="field" id="custom-advance-row" style="visibility:hidden;">
-        <label for="c-advance-custom">Custom Advance %</label>
-        <input type="number" id="c-advance-custom" min="0" max="100" placeholder="e.g. 35">
-      </div>
-    </div>
-
-    <button class="btn" id="generateBtn">Generate Onboarding Link</button>
-
-    <div class="result-box" id="resultBox">
-      <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;text-transform:uppercase;">Generated Link:</label>
-      <div class="url-display" id="urlDisplay"></div>
-      <div class="action-buttons">
-        <button class="btn outline" id="copyBtn">Copy Link</button>
-        <button class="btn" id="waBtn" style="background:#25D366;box-shadow:0 4px 12px rgba(37,211,102,0.15)">Send via WhatsApp</button>
-      </div>
-    </div>
+    
+    <button class="btn" id="loginBtn">Unlock Builder</button>
   </div>
 </div>
 
-<div class="footer">
-  Method Commerce — Shopify Store Design Studio Link Builder
+<!-- Main Generator Dashboard -->
+<div class="main-content" id="mainContent">
+  <div class="header">
+    <div class="brand">
+      <svg viewBox="0 0 100 100" width="26" height="26" style="flex-shrink:0;"><rect width="100" height="100" rx="22" fill="var(--cobalt)"/><path d="M27 66 V34 C27 31 29 29 31 31 L50 52 L69 31 C71 29 73 31 73 34 V66" fill="none" stroke="#FFF" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="50,25 43,35 57,35" fill="#FFF"/></svg>
+      Method Commerce
+    </div>
+    <a href="index.html" class="btn outline" style="width:auto;padding:8px 16px;font-size:13px;">View Website</a>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1>Link Generator</h1>
+      <div class="subtitle">Generate custom onboarding links with tailored price and payment terms.</div>
+      
+      <div class="field">
+        <label for="c-brand">Brand Name / Client Company</label>
+        <input type="text" id="c-brand" placeholder="e.g. Lune Jewels">
+      </div>
+
+      <div class="field">
+        <label for="c-name">Client Contact Person Name</label>
+        <input type="text" id="c-name" placeholder="e.g. Riya Patel">
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="c-plan-select">Plan Package</label>
+          <select id="c-plan-select">
+            <option value="Convert">Convert (Standard)</option>
+            <option value="Launch">Launch</option>
+            <option value="Brand">Brand</option>
+            <option value="Custom">Custom Plan...</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c-price">Total Price (INR)</label>
+          <input type="number" id="c-price" value="8999" placeholder="e.g. 15000">
+        </div>
+      </div>
+
+      <div class="field" id="custom-plan-row" style="display:none;">
+        <label for="c-plan-custom">Custom Plan Name</label>
+        <input type="text" id="c-plan-custom" placeholder="e.g. Custom Growth Store">
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="c-advance-select">Payment Terms (Advance %)</label>
+          <select id="c-advance-select">
+            <option value="0">0% - No Advance (Default)</option>
+            <option value="10">10% Advance</option>
+            <option value="25">25% Advance</option>
+            <option value="50">50% Advance</option>
+            <option value="custom">Custom Percentage...</option>
+          </select>
+        </div>
+        <div class="field" id="custom-advance-row" style="visibility:hidden;">
+          <label for="c-advance-custom">Custom Advance %</label>
+          <input type="number" id="c-advance-custom" min="0" max="100" placeholder="e.g. 35">
+        </div>
+      </div>
+
+      <button class="btn" id="generateBtn">Generate Onboarding Link</button>
+
+      <div class="result-box" id="resultBox">
+        <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;text-transform:uppercase;">Generated Link:</label>
+        <div class="url-display" id="urlDisplay"></div>
+        <div class="action-buttons">
+          <button class="btn outline" id="copyBtn">Copy Link</button>
+          <button class="btn" id="waBtn" style="background:#25D366;box-shadow:0 4px 12px rgba(37,211,102,0.15)">Send via WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Method Commerce — Shopify Store Design Studio Link Builder
+  </div>
 </div>
 
 <script>
+  // Simple Base64 Password Verification
+  const HASHED_PASS = 'bWV0aG9kNzg5'; // base64 for default password "method789"
+  
+  const loginOverlay = document.getElementById('loginOverlay');
+  const mainContent = document.getElementById('mainContent');
+  const loginPass = document.getElementById('loginPass');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+
+  const checkUnlockState = () => {
+    if (sessionStorage.getItem('generator_unlocked') === 'true') {
+      loginOverlay.classList.add('hidden');
+      mainContent.classList.add('active');
+    }
+  };
+
+  const handleLogin = () => {
+    const input = loginPass.value.trim();
+    if (btoa(input) === HASHED_PASS) {
+      sessionStorage.setItem('generator_unlocked', 'true');
+      loginOverlay.classList.add('hidden');
+      mainContent.classList.add('active');
+    } else {
+      loginError.style.display = 'block';
+      loginPass.classList.add('shake');
+      setTimeout(() => loginPass.classList.remove('shake'), 400);
+    }
+  };
+
+  loginBtn.addEventListener('click', handleLogin);
+  loginPass.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  // Check state on load
+  checkUnlockState();
+
   const planSelect = document.getElementById('c-plan-select');
   const customPlanRow = document.getElementById('custom-plan-row');
   const planCustom = document.getElementById('c-plan-custom');
